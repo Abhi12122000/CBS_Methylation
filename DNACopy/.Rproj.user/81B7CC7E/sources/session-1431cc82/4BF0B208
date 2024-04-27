@@ -1,0 +1,28 @@
+{
+    "id": "4BF0B208",
+    "path": null,
+    "project_path": null,
+    "type": "object_explorer",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1712999538517.0,
+    "source_on_save": false,
+    "relative_order": 5,
+    "properties": {
+        "id": "7ad095f9f04e48c3a58c94a5c4db5e23",
+        "name": "meth.segment",
+        "title": "meth.segment",
+        "language": "R",
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 0,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1712999538517,
+    "read_only": false,
+    "read_only_alternatives": []
+}

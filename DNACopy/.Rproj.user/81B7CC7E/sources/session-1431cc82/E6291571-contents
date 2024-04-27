@@ -1,0 +1,44 @@
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("DNAcopy")
+
+library(DNAcopy)
+library(dplyr)
+
+# TESTING DNACOPY
+data(coriell)
+
+CNA.object <- CNA(cbind(coriell$Coriell.05296,coriell$Coriell.13330),
+                  coriell$Chromosome,coriell$Position,
+                  data.type="logratio",sampleid=c("c05296","c13330"))
+
+CNA.segment <- segment(CNA.object)
+
+plot(CNA.segment, plot.type=c("whole", "plateau", "samplebychrom",
+                    "chrombysample"))
+plot(CNA.segment, plot.type=c("plateau"))
+
+# RUNNING ON METHYLATION DATA
+
+M11AO_1.meg3 <- read.table(file="~/Downloads/CBS/inputs/M11AO_1.filt.meg3.bed", sep="\t")
+M11AO_1.meg3 <- M11AO_1.meg3 %>% select(c(V1,V2,V3,V11))
+colnames(M11AO_1.meg3) <- c("chrom", "start", "end", "modperc")
+
+M11AO_2.meg3 <- read.table(file="~/Downloads/CBS/inputs/M11AO_2.filt.meg3.bed", sep="\t")
+M11AO_2.meg3 <- M11AO_2.meg3 %>% select(c(V1,V2,V3,V11))
+colnames(M11AO_2.meg3) <- c("chrom", "start", "end", "modperc")
+
+M11AO.meg3 <- merge(M11AO_1.meg3, M11AO_2.meg3, by=c("chrom", "start", "end"), suffixes = c(".hp1", ".hp2"))
+M11AO.meg3 <- M11AO.meg3 %>% mutate(modperc.delta=modperc.hp1-modperc.hp2)
+
+meth.object <- CNA(M11AO.meg3$modperc.hp2,
+                  M11AO.meg3$chrom,M11AO.meg3$start,
+                  data.type="logratio",sampleid=c("M11AO"))
+
+
+meth.segment <- segment(meth.object)
+
+plot(meth.segment, plot.type=c("whole", "plateau", "samplebychrom",
+                              "chrombysample"))
+plot(CNA.segment, plot.type=c("plateau"))
