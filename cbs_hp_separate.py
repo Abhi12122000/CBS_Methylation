@@ -113,6 +113,8 @@ def read_array_of_methylation_perc(filepath):
     df = pd.read_csv(filepath, sep="\t", header=None)
     chrom_str = df[0][0]
     data_positions = np.array(df.iloc[:, 1], dtype=np.int64)
+    filter_condition = df[4] < 5
+    df.loc[filter_condition, 10] *= -1
     df = df.iloc[:, 10]
     data = np.array(df, dtype=np.float64)
     print(data[0:5], data_positions[0:5])
@@ -122,7 +124,7 @@ def draw_segmented_data(data, S, title=None):
     '''Draw a scatterplot of the data with vertical lines at segment boundaries and horizontal lines at means of 
     the segments. S is a list of segment boundaries.'''
     # Define custom colors based on condition
-    colors = ['red' if (60 <= y <= 100) else 'blue' if (0 <= y <= 30) else 'grey' for y in data]
+    colors = ['red' if (60 <= y <= 100) else 'blue' if (0 <= y <= 30) else 'darkgreen' if (y<0) else 'grey' for y in data]
     print("colors size: ", len(colors))
     j=sns.scatterplot(x=range(len(data)),y=data,color=colors,size=.1,legend=None)
     print("data size: ", len(data))
@@ -162,9 +164,12 @@ if __name__ == '__main__':
         if segment_mean >= 60:
             # methylated
             segment_igv_color = [255, 0, 0]
-        elif segment_mean <= 30:
+        elif segment_mean <= 30 and segment_mean >= 0:
             # unmethylated
             segment_igv_color = [0, 0, 255]
+        elif segment_mean < 0:
+            #low read coverage
+            segment_igv_color = [0, 255, 0]
         else:
            segment_igv_color = [192, 192, 192]
         seg_off_file_obj.write(chrom_str + "\t" + str(sample_positions[S[i]]) + "\t" + str(sample_positions[S[i+1]-1]+1) + "\t" + args.t + "_" + str(i+1) + "\t" + "0\t.\t" + str(sample_positions[S[i]]) + "\t" + str(sample_positions[S[i+1]-1]+1) + "\t" + str(segment_igv_color[0]) + "," + str(segment_igv_color[1]) + "," + str(segment_igv_color[2]) + "\t" + str(segment_mean) + "\t" + str(S[i+1]-S[i]) + "\n")
@@ -174,4 +179,6 @@ if __name__ == '__main__':
         ax = draw_segmented_data(sample,  S, title='Circular Binary Segmentation of ' + args.t + ' target region in ' + args.s)
         ax.get_figure().savefig(args.s + "_" + args.t + "_" + chrom_str + "_" + str(sample_positions[S[0]]) + "_" + str(sample_positions[S[-1]-1]+1) + ".png")
 
-    # M11AO_hp1_FMR_vntr1_chrom_startoff_endoff.png
+
+# Run script:
+# python cbs_hp_separate.py -file modkit_inputs/M11AO_1.cpg1_60.gt17500.bed -o segment_boundaries_M11AO_1.cpg1_60.bed -p 1e-5 -s M11AO -t cpg1_60 -plot yes
