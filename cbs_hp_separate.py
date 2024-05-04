@@ -167,11 +167,11 @@ if __name__ == '__main__':
             segment_igv_color = [0, 0, 255]
         else:
            segment_igv_color = [192, 192, 192]
-        seg_off_file_obj.write(chrom_str + "\t" + str(sample_positions[S[i]]) + "\t" + str(sample_positions[S[i+1]-1]+1) + "\t" + args.t + "_" + str(i+1) + "\t" + "0\t.\t" + str(sample_positions[S[i]]) + "\t" + str(sample_positions[S[i+1]-1]+1) + "\t" + str(segment_igv_color[0]) + "," + str(segment_igv_color[1]) + "," + str(segment_igv_color[2]) + "\t" + str(segment_mean) + "\n")
+        seg_off_file_obj.write(chrom_str + "\t" + str(sample_positions[S[i]]) + "\t" + str(sample_positions[S[i+1]-1]+1) + "\t" + args.t + "_" + str(i+1) + "\t" + "0\t.\t" + str(sample_positions[S[i]]) + "\t" + str(sample_positions[S[i+1]-1]+1) + "\t" + str(segment_igv_color[0]) + "," + str(segment_igv_color[1]) + "," + str(segment_igv_color[2]) + "\t" + str(segment_mean) + "\t" + str(S[i+1]-S[i]) + "\n")
     
     seg_off_file_obj.close()
     if args.plot == "yes":
         ax = draw_segmented_data(sample,  S, title='Circular Binary Segmentation of ' + args.t + ' target region in ' + args.s)
-        ax.get_figure().savefig(args.s + "_" + args.t + "_" + chrom_str + "_" + str(sample_positions[S[0]]) + "_" + str(sample_positions[S[-1]-1]+1))
+        ax.get_figure().savefig(args.s + "_" + args.t + "_" + chrom_str + "_" + str(sample_positions[S[0]]) + "_" + str(sample_positions[S[-1]-1]+1) + ".png")
 
     # M11AO_hp1_FMR_vntr1_chrom_startoff_endoff.png
