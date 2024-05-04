@@ -1,0 +1,5 @@
+*.bed
+*.png
+hooks/
+info/
+inputs/
